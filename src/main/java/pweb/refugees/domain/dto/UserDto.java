@@ -1,6 +1,7 @@
 package pweb.refugees.domain.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pweb.refugees.enums.Provider;
 import pweb.refugees.enums.Role;
@@ -11,6 +12,7 @@ import javax.persistence.Enumerated;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserDto {
     private String username;
 

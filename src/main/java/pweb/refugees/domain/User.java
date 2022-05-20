@@ -7,8 +7,6 @@ import pweb.refugees.enums.Role;
 
 import javax.persistence.*;
 
-
-
 @Setter
 @Getter
 @Entity
