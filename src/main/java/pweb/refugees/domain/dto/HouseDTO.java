@@ -32,7 +32,7 @@ public class HouseDTO {
 
     private Integer bookingPeriod;
 
-    private byte[] image;
+    private String image;
 
 
 

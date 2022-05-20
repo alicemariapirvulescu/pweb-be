@@ -4,11 +4,11 @@ import com.sun.istack.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pweb.refugees.domain.dto.BookingHolderDto;
 import pweb.refugees.domain.dto.BookingPeriodDTO;
 import pweb.refugees.domain.dto.HouseDTO;
+import pweb.refugees.domain.dto.PreferencesRequestDTO;
 import pweb.refugees.service.DashboardService;
 
 import java.util.Set;
@@ -32,7 +32,6 @@ public class DashboardController {
     }
 
     @PutMapping("/update-status/{bookingId}/{status}")
-    @PreAuthorize("hasRole('ROLE_HOST')")
     public ResponseEntity updateBookingStatus(@PathVariable("bookingId") @NotNull Long bookingId,
                                               @PathVariable("status") @NotNull String status) {
         log.info("Updated booking");
@@ -42,7 +41,6 @@ public class DashboardController {
     }
 
     @PostMapping("/save-house")
-    @PreAuthorize("hasRole('ROLE_HOST')")
     public ResponseEntity createHouse(@RequestBody HouseDTO houseView) {
         log.info("Creating house");
         dashboardService.createHouse(houseView);
@@ -52,7 +50,6 @@ public class DashboardController {
     }
 
     @PostMapping("/save-booking/{houseId}/")
-    @PreAuthorize("hasRole('ROLE_GUEST')")
     public ResponseEntity createBooking(@PathVariable("houseId") Long houseId,
                                         @RequestBody BookingPeriodDTO periodDTO) {
         log.info("Creating booking");
@@ -68,6 +65,20 @@ public class DashboardController {
         return ResponseEntity.ok().body(houses);
     }
 
+    @PostMapping("/houses/filtered")
+    public ResponseEntity<Set<HouseDTO>> getHouses(@RequestBody PreferencesRequestDTO preferencesRequestDTO) {
+        log.info("Getting houses");
+        Set<HouseDTO> houses = dashboardService.getHousesFiltered(preferencesRequestDTO);
+        return ResponseEntity.ok().body(houses);
+    }
+
+    @GetMapping("/my/houses")
+    public ResponseEntity<Set<HouseDTO>> getMyHouses() {
+        log.info("Getting houses");
+        Set<HouseDTO> houses = dashboardService.getMyHouses();
+        return ResponseEntity.ok().body(houses);
+    }
+
     @GetMapping("/house/{id}")
     public ResponseEntity<HouseDTO> getHouse(@PathVariable("id") Long id) {
         log.info("Getting house");
@@ -78,7 +89,7 @@ public class DashboardController {
     @GetMapping("/bookings")
     public ResponseEntity<BookingHolderDto> getBookings() {
         log.info("Getting bookings");
-        BookingHolderDto bookings = dashboardService.getBookings();
+        BookingHolderDto bookings = dashboardService.getOwnerBookings();
         return ResponseEntity.ok().body(bookings);
     }
 

@@ -44,8 +44,8 @@ public class House {
     private Integer bookingPeriod;
 
     @Lob
-    @Column(name = "image",columnDefinition = "BLOB")
-    private byte[] image;
+    @Column(name = "image")
+    private String image;
 
     @Setter
     @OneToOne(targetEntity = User.class, cascade=CascadeType.ALL)
@@ -53,7 +53,7 @@ public class House {
     private User owner;
 
     public House(String description, String city, Integer capacity, Double latitude, Double longitude,
-                 String phone, Integer bookingPeriod,byte[] image,String address, String name) {
+                 String phone, Integer bookingPeriod,String image,String address, String name) {
         this.description = description;
         this.city = city;
         this.capacity = capacity;
