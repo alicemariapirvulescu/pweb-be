@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pweb.refugees.domain.dto.BookingHolderDto;
-import pweb.refugees.domain.dto.BookingPeriodDTO;
-import pweb.refugees.domain.dto.HouseDTO;
-import pweb.refugees.domain.dto.PreferencesRequestDTO;
+import pweb.refugees.domain.dto.*;
 import pweb.refugees.service.DashboardService;
 
 import java.util.Set;
@@ -31,12 +28,10 @@ public class DashboardController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/update-status/{bookingId}/{status}")
-    public ResponseEntity updateBookingStatus(@PathVariable("bookingId") @NotNull Long bookingId,
-                                              @PathVariable("status") @NotNull String status) {
+    @PostMapping("/update-status")
+    public ResponseEntity updateBookingStatus(@RequestBody UpdateRequestDTO updateRequestDTO) {
         log.info("Updated booking");
-        dashboardService.updateBooking(bookingId, status);
-        log.info("Updated booking");
+        dashboardService.updateBooking(updateRequestDTO.getBookingId(), updateRequestDTO.getBookingStatus());
         return ResponseEntity.ok().build();
     }
 
@@ -46,14 +41,12 @@ public class DashboardController {
         dashboardService.createHouse(houseView);
         log.info("Created house");
         return ResponseEntity.ok().build();
-
     }
 
-    @PostMapping("/save-booking/{houseId}/")
-    public ResponseEntity createBooking(@PathVariable("houseId") Long houseId,
-                                        @RequestBody BookingPeriodDTO periodDTO) {
+    @PostMapping("/save-booking")
+    public ResponseEntity createBooking(@RequestBody BookingPeriodDTO periodDTO) {
         log.info("Creating booking");
-        dashboardService.createBooking(houseId, periodDTO);
+        dashboardService.createBooking(periodDTO.getHouseId(), periodDTO);
         log.info("Created booking");
         return ResponseEntity.ok().build();
     }
@@ -89,7 +82,7 @@ public class DashboardController {
     @GetMapping("/bookings")
     public ResponseEntity<BookingHolderDto> getBookings() {
         log.info("Getting bookings");
-        BookingHolderDto bookings = dashboardService.getOwnerBookings();
+        BookingHolderDto bookings = dashboardService.getBookings();
         return ResponseEntity.ok().body(bookings);
     }
 

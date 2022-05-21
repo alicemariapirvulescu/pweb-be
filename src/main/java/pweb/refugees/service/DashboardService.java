@@ -6,6 +6,7 @@ import pweb.refugees.domain.dto.BookingHolderDto;
 import pweb.refugees.domain.dto.HouseDTO;
 import pweb.refugees.domain.dto.BookingPeriodDTO;
 import pweb.refugees.domain.dto.PreferencesRequestDTO;
+import pweb.refugees.enums.BookingStatus;
 
 import java.util.Set;
 
@@ -21,9 +22,9 @@ public interface DashboardService {
 
     void createBooking(Long houseId, BookingPeriodDTO bookingPeriod);
 
-    BookingHolderDto getOwnerBookings();
+    BookingHolderDto getBookings();
 
-    void updateBooking(Long bookingId, String bookingStatus);
+    void updateBooking(Long bookingId, BookingStatus bookingStatus);
 
     boolean checkForNewBookings();
 

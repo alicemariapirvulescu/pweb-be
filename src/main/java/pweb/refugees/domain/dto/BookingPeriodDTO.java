@@ -12,12 +12,10 @@ import java.time.LocalDate;
 public class BookingPeriodDTO {
 
     private LocalDate startDate;
-
     private LocalDate endDate;
-
-    private String city;
     private String phone;
-    private Integer capacity;
-
+    private String message;
+    private String peopleNo;
+    private Long houseId;
 
 }

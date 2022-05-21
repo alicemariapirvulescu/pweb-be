@@ -12,4 +12,5 @@ import java.util.Set;
 public interface BookingRepository extends JpaRepository<Booking,Long> {
     List<Booking> findAllByStartDateAndEndDate(LocalDate startDate, LocalDate endDate);
     Set<Booking> findAllByRentHouse_Owner(User owner);
+    Set<Booking> findAllByGuest(User guest);
 }

@@ -74,20 +74,18 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public void createBooking(Long houseId, BookingPeriodDTO bookingPeriod) {
-        List<Booking> bookings = bookingRepository.findAllByStartDateAndEndDate(bookingPeriod.getStartDate(),
-                bookingPeriod.getEndDate());
+
         User currentUser = currentUserService.getCurrentUserDetails();
         House rentHouse = houseRepository.getById(houseId);
-        if ((Objects.isNull(bookings) || bookings.isEmpty())
-                && rentHouse.getCapacity() > bookingPeriod.getCapacity() &&
-                rentHouse.getCity().equalsIgnoreCase(bookingPeriod.getCity())) {
-            Booking bookingToPersist = new Booking(bookingPeriod.getStartDate(), bookingPeriod.getEndDate(),
-                    currentUser, BookingStatus.PENDING, rentHouse);
-            bookingToPersist.setGuestPhone(bookingPeriod.getPhone());
-            updateControlTableForUser(rentHouse);
-            bookingRepository.save(bookingToPersist);
-        }
-    }
+        Booking bookingToPersist = new Booking(bookingPeriod.getStartDate(), bookingPeriod.getEndDate(),
+                currentUser, bookingPeriod.getPhone(), bookingPeriod.getMessage(), bookingPeriod.getPeopleNo(),
+               BookingStatus.PENDING, rentHouse);
+        bookingToPersist.setGuestPhone(bookingPeriod.getPhone());
+        bookingToPersist.setGuestMessage(bookingPeriod.getMessage());
+        updateControlTableForUser(rentHouse);
+        bookingRepository.save(bookingToPersist);
+
+}
 
     private void updateControlTableForUser(House rentHouse) {
         Optional<ItemControl> itemControl = itemControlRepository.findByOwner(rentHouse.getOwner());
@@ -108,9 +106,15 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public BookingHolderDto getOwnerBookings() {
+    public BookingHolderDto getBookings() {
         User currentUser = currentUserService.getCurrentUserDetails();
-        Set<Booking> bookings = bookingRepository.findAllByRentHouse_Owner(currentUser);
+        Set<Booking> bookings;
+        if (currentUser.getRole() == Role.ROLE_HOST) {
+            bookings = bookingRepository.findAllByRentHouse_Owner(currentUser);
+        } else {
+            bookings = bookingRepository.findAllByGuest(currentUser);
+        }
+
         Set<BookingDTO> bookingDTOSet = bookings.stream().map(b -> generalMapperComponent.bookingToDto(b)).collect(Collectors.toSet());
         Set<BookingDTO> bookingsApproved = bookingDTOSet.stream()
                 .filter(b -> b.getBookingStatus().equals(BookingStatus.APPROVED))
@@ -135,9 +139,9 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public void updateBooking(Long bookingId, String bookingStatus) {
+    public void updateBooking(Long bookingId, BookingStatus bookingStatus) {
         Booking bookingToUpdate = bookingRepository.getById(bookingId);
-        bookingToUpdate.setBookingStatus(BookingStatus.valueOf(bookingStatus));
+        bookingToUpdate.setBookingStatus(bookingStatus);
         bookingRepository.save(bookingToUpdate);
     }
 
