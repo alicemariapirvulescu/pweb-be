@@ -13,3 +13,8 @@ Server type: Database Engine
 Server name: localhost,1433
 Login: SA
 Password: Password1234!\
+
+
+Wireframes and prototype:
+
+https://www.figma.com/file/sl0eeI2hS7jV8PH3qFEsf9/Proiect
